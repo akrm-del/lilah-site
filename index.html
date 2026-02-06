@@ -26,6 +26,16 @@
   --rust: #C47D3E;
 }
 
+[data-theme="dark"] {
+  --bg: #111820;
+  --card: #1A2332;
+  --text: #D8DDE4;
+  --muted: #8E9BAA;
+  --border: #2A3544;
+  --navy: #0D1520;
+  --navy2: #141E2B;
+}
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -378,6 +388,61 @@ body {
 }
 .footer-bottom p { color: rgba(255,255,255,0.3); font-size: 13px; }
 
+/* ===== DARK MODE OVERRIDES ===== */
+[data-theme="dark"] .hero { background: var(--navy); }
+[data-theme="dark"] .hero-card { background: var(--navy2); border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .hero-stat { background: var(--navy2); border-color: rgba(255,255,255,0.06); }
+[data-theme="dark"] .how { background: var(--bg); }
+[data-theme="dark"] .how-step { background: var(--card); border-color: var(--border); }
+[data-theme="dark"] .how-step:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+[data-theme="dark"] .how-step h3 { color: #fff; }
+[data-theme="dark"] .section-title { color: #fff; }
+[data-theme="dark"] .categories { background: #0A1018; }
+[data-theme="dark"] .cat-card { background: var(--navy2); }
+[data-theme="dark"] .audiences { background: var(--bg); }
+[data-theme="dark"] .audience-card { background: var(--card); border-color: var(--border); }
+[data-theme="dark"] .audience-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+[data-theme="dark"] .audience-card h3 { color: #fff; }
+[data-theme="dark"] .trust { background: var(--card); border-color: var(--border); }
+[data-theme="dark"] .trust-item .num { color: #fff; }
+[data-theme="dark"] .contact { background: var(--bg); }
+[data-theme="dark"] .contact-info h3 { color: #fff; }
+[data-theme="dark"] .contact-detail .value { color: #fff; }
+[data-theme="dark"] .contact-detail a { color: #fff; }
+[data-theme="dark"] .contact-detail a:hover { color: var(--gold); }
+[data-theme="dark"] .form-card { background: var(--card); border-color: var(--border); }
+[data-theme="dark"] .form-card h3 { color: #fff; }
+[data-theme="dark"] .form-group label { color: #D8DDE4; }
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+  background: var(--bg); color: var(--text); border-color: var(--border);
+}
+[data-theme="dark"] .form-success h3 { color: #fff; }
+[data-theme="dark"] .footer { background: #080D14; }
+[data-theme="dark"] .nav { background: rgba(13, 21, 32, 0.97); }
+
+/* Theme toggle */
+.theme-toggle {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; user-select: none;
+}
+.theme-toggle-label { font-size: 13px; color: rgba(255,255,255,0.4); }
+.theme-toggle-track {
+  width: 44px; height: 24px; background: rgba(255,255,255,0.12);
+  border-radius: 12px; position: relative; transition: background 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.theme-toggle-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--gold); position: absolute;
+  top: 2px; left: 3px; transition: transform 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+[data-theme="dark"] .theme-toggle-track { background: rgba(184,148,62,0.25); }
+[data-theme="dark"] .theme-toggle-thumb { transform: translateX(20px); }
+.theme-toggle-icon { font-size: 16px; line-height: 1; }
+
 /* ===== ANIMATIONS ===== */
 .fade-in {
   opacity: 0; transform: translateY(24px);
@@ -388,7 +453,7 @@ body {
 /* ===== RESPONSIVE ===== */
 @media (max-width: 968px) {
   .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-  .hero-visual { order: -1; }
+  .hero-visual { order: 1; }
   .audience-grid { grid-template-columns: 1fr; }
   .contact-wrapper { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
@@ -743,6 +808,11 @@ body {
     </div>
     <div class="footer-bottom">
       <p>&copy; 2026 Lilah Group. All rights reserved.</p>
+      <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle dark mode" tabindex="0">
+        <span class="theme-toggle-icon">&#9728;</span>
+        <div class="theme-toggle-track"><div class="theme-toggle-thumb"></div></div>
+        <span class="theme-toggle-icon">&#9790;</span>
+      </div>
       <p>lilahgroup.com</p>
     </div>
   </div>
@@ -803,6 +873,26 @@ document.getElementById('leadForm').addEventListener('submit', function(e) {
     this.style.display = 'block';
     document.getElementById('formSuccess').style.display = 'none';
   }, 5000);
+});
+
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('lilah_theme') || 'light';
+if (savedTheme === 'dark') {
+  document.documentElement.setAttribute('data-theme', 'dark');
+}
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  if (next === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  localStorage.setItem('lilah_theme', next);
+});
+themeToggle.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); themeToggle.click(); }
 });
 </script>
 </body>
